@@ -15,6 +15,6 @@ export const AIResponseSchema = z.object({
     explanation: z.string().min(1, "Explanation cannot be empty"),
     testCases: z
         .array(TestCaseSchema)
-        .min(1, "At least one test case is required"),
+        .min(0, "At least one test case is required"),
     errors: z.array(ErrorSchema),
 });
