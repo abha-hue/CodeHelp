@@ -18,7 +18,7 @@ const requestValidator = (req, res, next) => {
 
 app.post('/analyze', requestValidator, async (req, res) => {
     const { code, language } = req.body;
-    const job = await analyzeQueue.add("analyze-code", {
+    const job = await analyzeQueue.add("code-analysis", {
         code,
         language
     });

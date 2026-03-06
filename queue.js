@@ -1,7 +1,9 @@
 import { Queue } from "bullmq";
 import IORedis from "ioredis";
 
-const connection = new IORedis();
+const connection = new IORedis({
+    maxRetriesPerRequest: null
+});
 
 export const analyzeQueue = new Queue("code-analysis", {
     connection

@@ -3,7 +3,9 @@ import { AIResponseSchema } from "./aischema.js";
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
 
-const connection = new IORedis();
+const connection = new IORedis({
+    maxRetriesPerRequest: null
+});
 
 const worker = new Worker(
     "code-analysis",
@@ -28,7 +30,7 @@ const worker = new Worker(
         if (!validation.success) {
             throw new Error("Model output failed schema validation");
         }
-
+        console.log(validation);
         return validation.data;
     },
     { connection }
