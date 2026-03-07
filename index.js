@@ -1,6 +1,6 @@
-
 import express from "express";
 import { analyzeQueue } from "./queue.js";
+import { LiteWhisperForConditionalGeneration } from "@huggingface/transformers";
 
 const app = express();
 app.use(express.json());
@@ -25,17 +25,40 @@ app.post('/analyze', requestValidator, async (req, res) => {
     return res.json({ id: job.id, status: "queued" });
 })
 
-// app.get("/status/:id", async (req, res) => {
-//     const { id } = req.params;
-//     const job = await analyzeQueue.getJob(id);
-//     if (!job) {
-//         return res.status(404).json({ error: "Job not found" });
-//     }
-//     return res.json({ status: job.getState() });
-// })
+app.get("/status/:id", async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+
+    try {
+        const job = await analyzeQueue.getJob(id);
+
+        if (!job) {
+            return res.status(404).json({ error: "Job not found" });
+        }
+        const state = await job.getState();
+
+        if (state === "completed") {
+            return res.json({
+                status: state,
+                result: job.returnvalue
+            });
+        }
+
+        if (state === "failed") {
+            return res.json({
+                status: state,
+                error: job.failedReason
+            });
+        }
+
+        return res.json({ status: state });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
 });
-
-
