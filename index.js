@@ -1,6 +1,5 @@
 import express from "express";
 import { analyzeQueue } from "./queue.js";
-import { LiteWhisperForConditionalGeneration } from "@huggingface/transformers";
 
 const app = express();
 app.use(express.json());
